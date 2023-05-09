@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">经典贪吃蛇</string>
+    <string name="settings">游戏设置</string>
+    <string name="easy">无</string>
+    <string name="medium">少量</string>
+    <string name="hard">大量</string>
+    <string name="difficulty">障碍物数量</string>
+    <string name="size">地图规模</string>
+    <string name="tiny">狭小</string>
+    <string name="normal">正常</string>
+    <string name="wide">宽阔</string>
+    <string name="pause">暂停</string>
+    <string name="cancel">取消</string>
+    <string name="pauseContent">游戏已暂停。</string>
+    <string name="continueGame">继续游戏</string>
+    <string name="end">游戏结束！</string>
+    <string name="restart">再来一次</string>
+    <string name="score">"你的得分是: "</string>
+    <string name="speed">蛇的移动速度</string>
+    <string name="slow">缓慢</string>
+    <string name="quick">快速</string>
+    <string name="sound">音乐和音效</string>
+    <string name="allSound">全开</string>
+    <string name="only">仅音效</string>
+    <string name="allOff">全关</string>
+    <string name="Info">帮助</string>
+</resources>

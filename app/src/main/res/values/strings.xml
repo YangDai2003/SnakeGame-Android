@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">SnakeGame</string>
+    <string name="settings">Game Settings</string>
+    <string name="easy">None</string>
+    <string name="medium">Few</string>
+    <string name="hard">Many</string>
+    <string name="difficulty">Number Of Obstacles</string>
+    <string name="size">Map Size</string>
+    <string name="tiny">Tiny</string>
+    <string name="normal">Normal</string>
+    <string name="wide">Wide</string>
+    <string name="pause">Paused</string>
+    <string name="cancel">Cancel</string>
+    <string name="pauseContent">Game has been paused.</string>
+    <string name="continueGame">Continue</string>
+    <string name="end">Game Over!</string>
+    <string name="restart">Play again</string>
+    <string name="score">Your score is:</string>
+    <string name="speed">Snake Speed</string>
+    <string name="slow">Slow</string>
+    <string name="quick">quick</string>
+    <string name="sound">Music and Sound Effects</string>
+    <string name="allSound">All On</string>
+    <string name="only">Only Sound Effects</string>
+    <string name="allOff">All Off</string>
+    <string name="Info">帮助</string>
+    <string name="confirm">Confirm</string>
+</resources>
