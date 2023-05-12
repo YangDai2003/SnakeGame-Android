@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">经典贪吃蛇</string>
+    <string name="app_name">指尖贪吃蛇</string>
     <string name="settings">游戏设置</string>
     <string name="easy">无</string>
     <string name="medium">少量</string>
@@ -25,4 +25,12 @@
     <string name="only">仅音效</string>
     <string name="allOff">全关</string>
     <string name="Info">帮助</string>
+    <string name="confirm">知道了</string>
+    <string name="content">指南:\n1) 双击即可开始/暂停。\n2) 滑动屏幕以控制蛇转向。\n3) 出界或者撞到障碍物会死亡，吃到普通食物会加一分并变长一个单位长度，吃到特殊食物会加三分并减一个单位长度。\n4) 单人模式为玩家操控一条蛇在不撞到自己、障碍物并且不出界的情况下吃到尽可能多的食物，人机对战为玩家操控蛇与AI蛇进行较量，玩家蛇与AI蛇不会发生碰撞。</string>
+    <string name="highest">"你的最高纪录是: "</string>
+    <string name="mode">游戏模式</string>
+    <string name="single">单人模式</string>
+    <string name="pve">人机对战</string>
+    <string name="you">"你的分数: "</string>
+    <string name="ai">"AI: "</string>
 </resources>

@@ -32,5 +32,6 @@
         <!-- Customize your theme here. -->
         <item name="android:windowContentTransitions">true</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="actionBarSize">50dp</item>
     </style>
 </resources>

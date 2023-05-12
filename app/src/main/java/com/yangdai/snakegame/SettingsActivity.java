@@ -14,10 +14,18 @@ import com.google.android.material.color.DynamicColors;
 import com.google.android.material.elevation.SurfaceColors;
 
 public class SettingsActivity extends AppCompatActivity {
-    MaterialButtonToggleGroup materialButtonToggleGroup1, materialButtonToggleGroup2,
-            materialButtonToggleGroup3, materialButtonToggleGroup4;
-    private int difficulty, size, speed, sound;
-    SharedPreferences sharedPreferences;
+    private static final String SETTINGS_KEY = "settings";
+    private static final String DIFFICULTY_KEY = "difficulty";
+    private static final String SIZE_KEY = "size";
+    private static final String SPEED_KEY = "speed";
+    private static final String SOUND_KEY = "sound";
+    private static final String MODE_KEY = "mode";
+    private int difficulty;
+    private int size;
+    private int speed;
+    private int sound;
+    private int mode;
+    private SharedPreferences sharedPreferences;
 
     @SuppressLint("ResourceType")
     @Override
@@ -25,57 +33,68 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         DynamicColors.applyToActivityIfAvailable(this);
         getWindow().setStatusBarColor(SurfaceColors.SURFACE_2.getColor(this));
-        setContentView(R.layout.activity_settiings);
-        sharedPreferences = getSharedPreferences("settings", MODE_PRIVATE);
-        materialButtonToggleGroup1 = findViewById(R.id.difficulty);
-        materialButtonToggleGroup2 = findViewById(R.id.size);
-        materialButtonToggleGroup3 = findViewById(R.id.speed);
-        materialButtonToggleGroup4 = findViewById(R.id.sound);
+        setContentView(R.layout.activity_settings);
 
-        difficulty = sharedPreferences.getInt("difficulty", 0);
-        size = sharedPreferences.getInt("size", 1);
-        speed = sharedPreferences.getInt("speed", 1);
-        sound = sharedPreferences.getInt("sound", 0);
+        sharedPreferences = getSharedPreferences(SETTINGS_KEY, MODE_PRIVATE);
+        MaterialButtonToggleGroup difficultyGroup = findViewById(R.id.difficulty);
+        MaterialButtonToggleGroup sizeGroup = findViewById(R.id.size);
+        MaterialButtonToggleGroup speedGroup = findViewById(R.id.speed);
+        MaterialButtonToggleGroup soundGroup = findViewById(R.id.sound);
+        MaterialButtonToggleGroup modeGroup = findViewById(R.id.mode);
 
-        if (difficulty == 0) materialButtonToggleGroup1.check(R.id.easy);
-        else if (difficulty == 1) materialButtonToggleGroup1.check(R.id.medium);
-        else materialButtonToggleGroup1.check(R.id.hard);
-        if (size == 0) materialButtonToggleGroup2.check(R.id.tiny);
-        else if (size == 1) materialButtonToggleGroup2.check(R.id.normal);
-        else materialButtonToggleGroup2.check(R.id.wide);
-        if (speed == 0) materialButtonToggleGroup3.check(R.id.slow);
-        else if (speed == 1) materialButtonToggleGroup3.check(R.id.normalSpeed);
-        else materialButtonToggleGroup3.check(R.id.qiuck);
-        if (sound == 0) materialButtonToggleGroup4.check(R.id.all);
-        else if (sound == 1) materialButtonToggleGroup4.check(R.id.only);
-        else materialButtonToggleGroup4.check(R.id.none);
+        difficulty = sharedPreferences.getInt(DIFFICULTY_KEY, 0);
+        size = sharedPreferences.getInt(SIZE_KEY, 1);
+        speed = sharedPreferences.getInt(SPEED_KEY, 1);
+        sound = sharedPreferences.getInt(SOUND_KEY, 0);
+        mode = sharedPreferences.getInt(MODE_KEY, 0);
 
-        materialButtonToggleGroup1.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+        if (difficulty == 0) difficultyGroup.check(R.id.easy);
+        else if (difficulty == 1) difficultyGroup.check(R.id.medium);
+        else difficultyGroup.check(R.id.hard);
+        if (size == 0) sizeGroup.check(R.id.tiny);
+        else if (size == 1) sizeGroup.check(R.id.normal);
+        else sizeGroup.check(R.id.wide);
+        if (speed == 0) speedGroup.check(R.id.slow);
+        else if (speed == 1) speedGroup.check(R.id.normalSpeed);
+        else speedGroup.check(R.id.quick);
+        if (sound == 0) soundGroup.check(R.id.all);
+        else if (sound == 1) soundGroup.check(R.id.only);
+        else soundGroup.check(R.id.none);
+        if (mode == 0) modeGroup.check(R.id.single);
+        else modeGroup.check(R.id.pve);
+
+        difficultyGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
             if (isChecked) {
                 if (checkedId == R.id.easy) difficulty = 0;
                 else if (checkedId == R.id.medium) difficulty = 1;
                 else difficulty = 2;
             }
         });
-        materialButtonToggleGroup2.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+        sizeGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
             if (isChecked) {
                 if (checkedId == R.id.tiny) size = 0;
                 else if (checkedId == R.id.normal) size = 1;
                 else size = 2;
             }
         });
-        materialButtonToggleGroup3.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+        speedGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
             if (isChecked) {
                 if (checkedId == R.id.slow) speed = 0;
                 else if (checkedId == R.id.normalSpeed) speed = 1;
                 else speed = 2;
             }
         });
-        materialButtonToggleGroup4.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+        soundGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
             if (isChecked) {
                 if (checkedId == R.id.all) sound = 0;
                 else if (checkedId == R.id.only) sound = 1;
                 else sound = 2;
+            }
+        });
+        modeGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+            if (isChecked) {
+                if (checkedId == R.id.single) mode = 0;
+                else mode = 1;
             }
         });
 
@@ -101,16 +120,13 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void send() {
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("difficulty", difficulty);
-        editor.putInt("size", size);
-        editor.putInt("speed", speed);
-        editor.putInt("sound", sound);
+        editor.putInt(DIFFICULTY_KEY, difficulty);
+        editor.putInt(SIZE_KEY, size);
+        editor.putInt(SPEED_KEY, speed);
+        editor.putInt(SOUND_KEY, sound);
+        editor.putInt(MODE_KEY, mode);
         editor.apply();
         Intent intent = new Intent();
-        intent.putExtra("difficulty", difficulty);
-        intent.putExtra("size", size);
-        intent.putExtra("speed", speed);
-        intent.putExtra("sound", sound);
         setResult(RESULT_OK, intent);
     }
 }

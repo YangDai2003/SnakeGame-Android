@@ -24,7 +24,6 @@ public class MusicServer {
     }
 
     public static void stop() {
-        // TODO Auto-generated method stub
         if (mp != null) {
             mp.stop();
             mp.release();

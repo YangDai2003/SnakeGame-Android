@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SnakeGame</string>
+    <string name="app_name">Snake Fingertips</string>
     <string name="settings">Game Settings</string>
     <string name="easy">None</string>
     <string name="medium">Few</string>
@@ -14,8 +14,8 @@
     <string name="pauseContent">Game has been paused.</string>
     <string name="continueGame">Continue</string>
     <string name="end">Game Over!</string>
-    <string name="restart">Play again</string>
-    <string name="score">Your score is:</string>
+    <string name="restart">Play Again</string>
+    <string name="score">"Your score is: "</string>
     <string name="speed">Snake Speed</string>
     <string name="slow">Slow</string>
     <string name="quick">quick</string>
@@ -23,6 +23,13 @@
     <string name="allSound">All On</string>
     <string name="only">Only Sound Effects</string>
     <string name="allOff">All Off</string>
-    <string name="Info">帮助</string>
+    <string name="Info">Help</string>
     <string name="confirm">Confirm</string>
+    <string name="content">Guide:\n1) Double-click to start/pause.\n2) Swipe the screen to control the snake\'s direction.\n3) If you go out of bounds or hit an obstacle, you will die. If you eat ordinary food, you will get one point and become longer by one unit. Food will add three points and subtract one unit length.\n4) The single-player mode is for the player to control a snake to eat as much food as possible without hitting obstacles or going out of bounds. The man-machine battle is for the player to control the snake to compete with the AI snake. The player snake and the AI snake will not Collision.</string>
+    <string name="highest">"Your highest score is: "</string>
+    <string name="mode">Game Mode</string>
+    <string name="single">Single Player</string>
+    <string name="pve">PvE</string>
+    <string name="you">"Your score: "</string>
+    <string name="ai">"AI: "</string>
 </resources>
