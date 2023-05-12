@@ -411,25 +411,25 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     }
 
                 }
-//                // 改变移动方向
-//                switch (movingDirection) {
-//                    case "right":
-//                        snakePointsList.get(0).setPositionX(headPositionX + (pointSize * 2));
-//                        snakePointsList.get(0).setPositionY(headPositionY);
-//                        break;
-//                    case "left":
-//                        snakePointsList.get(0).setPositionX(headPositionX - (pointSize * 2));
-//                        snakePointsList.get(0).setPositionY(headPositionY);
-//                        break;
-//                    case "up":
-//                        snakePointsList.get(0).setPositionX(headPositionX);
-//                        snakePointsList.get(0).setPositionY(headPositionY - (pointSize * 2));
-//                        break;
-//                    case "down":
-//                        snakePointsList.get(0).setPositionX(headPositionX);
-//                        snakePointsList.get(0).setPositionY(headPositionY + (pointSize * 2));
-//                        break;
-//                }
+                // 改变移动方向
+                switch (movingDirection) {
+                    case "right":
+                        snakePointsList.get(0).setPositionX(headPositionX + (pointSize * 2));
+                        snakePointsList.get(0).setPositionY(headPositionY);
+                        break;
+                    case "left":
+                        snakePointsList.get(0).setPositionX(headPositionX - (pointSize * 2));
+                        snakePointsList.get(0).setPositionY(headPositionY);
+                        break;
+                    case "up":
+                        snakePointsList.get(0).setPositionX(headPositionX);
+                        snakePointsList.get(0).setPositionY(headPositionY - (pointSize * 2));
+                        break;
+                    case "down":
+                        snakePointsList.get(0).setPositionX(headPositionX);
+                        snakePointsList.get(0).setPositionY(headPositionY + (pointSize * 2));
+                        break;
+                }
 
                 boolean gameOver;
                 if (mode == 0)
@@ -596,12 +596,12 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             return gameOver = true;
         } else {
             // 检查是否撞到身体
-//            SnakePoints snakePoints = new SnakePoints(headPositionX, headPositionY);
-//            for (int i = 1; i < snakePointsList.size(); i++) {
-//                if (snakePointsList.get(i).equals(snakePoints)) {
-//                    return gameOver = true;
-//                }
-//            }
+            SnakePoints snakePoints = new SnakePoints(headPositionX, headPositionY);
+            for (int i = 1; i < snakePointsList.size(); i++) {
+                if (snakePointsList.get(i).equals(snakePoints)) {
+                    return gameOver = true;
+                }
+            }
             SnakePoints aiPoints = new SnakePoints(aiHeadPositionX, aiHeadPositionY);
             for (int i = 1; i < aiPointsList.size(); i++) {
                 if (aiPointsList.get(i).equals(aiPoints)) {

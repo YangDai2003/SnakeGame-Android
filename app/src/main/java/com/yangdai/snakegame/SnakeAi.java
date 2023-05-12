@@ -224,7 +224,7 @@ public class SnakeAi {
                     return "up";
                 }
             }
-        } else if (!foodIsOnRight){
+        } else if (!foodIsOnRight) {
             if (!movingDirection.equals("right")) {
                 // 如果蛇头其它位置移动，但食物在左侧
                 if (canMoveLeft && getPossibleDirections(headPositionX, headPositionY, aiPointsList).contains("left")) {
