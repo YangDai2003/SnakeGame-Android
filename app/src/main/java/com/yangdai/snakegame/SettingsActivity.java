@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.color.DynamicColors;
 import com.google.android.material.elevation.SurfaceColors;
+import com.google.android.material.slider.Slider;
 
 public class SettingsActivity extends AppCompatActivity {
     private static final String SETTINGS_KEY = "settings";
@@ -36,21 +37,21 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         sharedPreferences = getSharedPreferences(SETTINGS_KEY, MODE_PRIVATE);
-        MaterialButtonToggleGroup difficultyGroup = findViewById(R.id.difficulty);
+
         MaterialButtonToggleGroup sizeGroup = findViewById(R.id.size);
         MaterialButtonToggleGroup speedGroup = findViewById(R.id.speed);
         MaterialButtonToggleGroup soundGroup = findViewById(R.id.sound);
         MaterialButtonToggleGroup modeGroup = findViewById(R.id.mode);
+        Slider slider = findViewById(R.id.slider);
 
         difficulty = sharedPreferences.getInt(DIFFICULTY_KEY, 0);
+        if (difficulty % 2 != 0) difficulty -= 1;
         size = sharedPreferences.getInt(SIZE_KEY, 1);
         speed = sharedPreferences.getInt(SPEED_KEY, 1);
         sound = sharedPreferences.getInt(SOUND_KEY, 0);
         mode = sharedPreferences.getInt(MODE_KEY, 0);
 
-        if (difficulty == 0) difficultyGroup.check(R.id.easy);
-        else if (difficulty == 1) difficultyGroup.check(R.id.medium);
-        else difficultyGroup.check(R.id.hard);
+        slider.setValue(difficulty);
         if (size == 0) sizeGroup.check(R.id.tiny);
         else if (size == 1) sizeGroup.check(R.id.normal);
         else sizeGroup.check(R.id.wide);
@@ -63,13 +64,7 @@ public class SettingsActivity extends AppCompatActivity {
         if (mode == 0) modeGroup.check(R.id.single);
         else modeGroup.check(R.id.pve);
 
-        difficultyGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
-            if (isChecked) {
-                if (checkedId == R.id.easy) difficulty = 0;
-                else if (checkedId == R.id.medium) difficulty = 1;
-                else difficulty = 2;
-            }
-        });
+        slider.addOnChangeListener((slider1, value, fromUser) -> difficulty = (int) value);
         sizeGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
             if (isChecked) {
                 if (checkedId == R.id.tiny) size = 0;
