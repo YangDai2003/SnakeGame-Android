@@ -68,7 +68,7 @@ public class SnakeAi2 {
             SnakePoints current = openSet.poll();
 
             // 如果当前点是终点，返回路径
-            if (current.equals(end)) {
+            if (current != null && current.equals(end)) {
                 return reconstructPath(current);
             }
 
@@ -76,22 +76,24 @@ public class SnakeAi2 {
             closedSet.add(current);
 
             // 遍历当前点的邻居
-            for (SnakePoints neighbor : getNeighbors(current)) {
-                // 如果邻居已经在closedSet中，跳过
-                if (closedSet.contains(neighbor)) {
-                    continue;
-                }
+            if (current != null) {
+                for (SnakePoints neighbor : getNeighbors(current)) {
+                    // 如果邻居已经在closedSet中，跳过
+                    if (closedSet.contains(neighbor)) {
+                        continue;
+                    }
 
-                // 计算从起点到邻居的距离
-                int tentativeGScore = gScore[current.getPositionX() / pointSize][current.getPositionY() / pointSize] + 1;
+                    // 计算从起点到邻居的距离
+                    int tentativeGScore = gScore[current.getPositionX() / pointSize][current.getPositionY() / pointSize] + 1;
 
-                // 如果邻居不在openSet中，或者从起点到邻居的距离更短，更新gScore和fScore，并将邻居加入openSet
-                if (!openSet.contains(neighbor) || tentativeGScore < gScore[neighbor.getPositionX() / pointSize][neighbor.getPositionY() / pointSize]) {
-                    gScore[neighbor.getPositionX() / pointSize][neighbor.getPositionY() / pointSize] = tentativeGScore;
-                    fScore[neighbor.getPositionX() / pointSize][neighbor.getPositionY() / pointSize] = tentativeGScore + heuristicCostEstimate(neighbor, end);
-                    neighbor.cameFrom = current;
-                    if (!openSet.contains(neighbor)) {
-                        openSet.add(neighbor);
+                    // 如果邻居不在openSet中，或者从起点到邻居的距离更短，更新gScore和fScore，并将邻居加入openSet
+                    if (!openSet.contains(neighbor) || tentativeGScore < gScore[neighbor.getPositionX() / pointSize][neighbor.getPositionY() / pointSize]) {
+                        gScore[neighbor.getPositionX() / pointSize][neighbor.getPositionY() / pointSize] = tentativeGScore;
+                        fScore[neighbor.getPositionX() / pointSize][neighbor.getPositionY() / pointSize] = tentativeGScore + heuristicCostEstimate(neighbor, end);
+                        neighbor.cameFrom = current;
+                        if (!openSet.contains(neighbor)) {
+                            openSet.add(neighbor);
+                        }
                     }
                 }
             }
@@ -108,7 +110,7 @@ public class SnakeAi2 {
 
     private List<SnakePoints> getNeighbors(SnakePoints point) {
         List<SnakePoints> neighbors = new ArrayList<>();
-        if (point.getPositionX() > 0) {
+        if (point.getPositionX() - pointSize > 0) {
             SnakePoints left = new SnakePoints(point.getPositionX() - pointSize, point.getPositionY());
             if (!barriers.contains(left)) {
                 neighbors.add(left);
@@ -120,7 +122,7 @@ public class SnakeAi2 {
                 neighbors.add(right);
             }
         }
-        if (point.getPositionY() > 0) {
+        if (point.getPositionY() - pointSize > 0) {
             SnakePoints up = new SnakePoints(point.getPositionX(), point.getPositionY() - pointSize);
             if (!barriers.contains(up)) {
                 neighbors.add(up);

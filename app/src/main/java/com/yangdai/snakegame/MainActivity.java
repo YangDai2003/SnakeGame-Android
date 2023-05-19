@@ -22,6 +22,7 @@ import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -85,6 +86,33 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private final Dpad dpad = new Dpad();
     private ImageView imageView;
     private MaterialTextView textView;
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_D:
+                if (!movingDirection.equals("left")) {
+                    movingDirection = "right";
+                }
+                return true;
+            case KeyEvent.KEYCODE_A:
+                if (!movingDirection.equals("right")) {
+                    movingDirection = "left";
+                }
+                return true;
+            case KeyEvent.KEYCODE_W:
+                if (!movingDirection.equals("down")) {
+                    movingDirection = "up";
+                }
+                return true;
+            case KeyEvent.KEYCODE_S:
+                if (!movingDirection.equals("up")) {
+                    movingDirection = "down";
+                }
+                return true;
+        }
+        return super.onKeyUp(keyCode, event);
+    }
 
     @Override
     public boolean onGenericMotionEvent(MotionEvent event) {
