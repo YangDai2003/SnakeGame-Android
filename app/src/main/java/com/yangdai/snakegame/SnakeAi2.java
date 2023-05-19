@@ -1,4 +1,5 @@
 package com.yangdai.snakegame;
+
 import android.view.SurfaceView;
 
 import java.util.ArrayList;
@@ -51,8 +52,8 @@ public class SnakeAi2 {
         openSet.add(start);
 
         // 初始化gScore和fScore
-        int[][] gScore = new int[surfaceView.getWidth() / pointSize][surfaceView.getHeight() / pointSize];
-        int[][] fScore = new int[surfaceView.getWidth() / pointSize][surfaceView.getHeight() / pointSize];
+        int[][] gScore = new int[(surfaceView.getWidth() / pointSize) + 1][(surfaceView.getHeight() / pointSize) + 1];
+        int[][] fScore = new int[(surfaceView.getWidth() / pointSize) + 1][(surfaceView.getHeight() / pointSize) + 1];
         for (int i = 0; i < surfaceView.getWidth() / pointSize; i++) {
             for (int j = 0; j < surfaceView.getHeight() / pointSize; j++) {
                 gScore[i][j] = Integer.MAX_VALUE;
@@ -79,7 +80,7 @@ public class SnakeAi2 {
             if (current != null) {
                 for (SnakePoints neighbor : getNeighbors(current)) {
                     // 如果邻居已经在closedSet中，跳过
-                    if (closedSet.contains(neighbor)) {
+                    if (closedSet.contains(neighbor) || aiPointsList.contains(neighbor)) {
                         continue;
                     }
 
