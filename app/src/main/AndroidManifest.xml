@@ -14,7 +14,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:enableOnBackInvokedCallback="false"
-        tools:targetApi="TIRAMISU">
+        tools:targetApi="TIRAMISU"
+        tools:ignore="DiscouragedApi">
         <activity
             android:name=".SettingsActivity"
             android:parentActivityName=".MainActivity"

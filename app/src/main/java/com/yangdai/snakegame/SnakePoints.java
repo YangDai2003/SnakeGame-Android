@@ -4,7 +4,6 @@ import androidx.annotation.Nullable;
 
 public class SnakePoints {
     private int positionX, positionY;
-    public SnakePoints cameFrom;
 
     public SnakePoints(int positionX, int positionY) {
         this.positionX = positionX;

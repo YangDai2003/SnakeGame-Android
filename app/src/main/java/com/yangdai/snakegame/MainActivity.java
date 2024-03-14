@@ -47,22 +47,22 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity implements SurfaceHolder.Callback {
-    private final List<SnakePoints> snakePointsList = new ArrayList<>(), aiPointsList = new ArrayList<>();
+    private final List<SnakePoints> snakePointsList = new ArrayList<>();
     //障碍物位置
     private final Set<SnakePoints> barriers = new HashSet<>();
     private SurfaceView surfaceView;
     private TextView scoreTV;
     private SurfaceHolder surfaceHolder;
     //起始方向
-    private String movingDirection = "right", aiMovingDirection = "left";
+    private String movingDirection = "right";
     //分数
-    private static int score = 0, scoreAi = 0;
+    private static int score = 0;
     // 绘制大小
     private static int pointSize = 50;
     //起始长度
     private static final int defaultLength = 3;
     //蛇的颜色
-    private static final int snakeColor = Color.YELLOW, aiColor = Color.BLUE, specialFood = Color.RED;
+    private static final int snakeColor = Color.YELLOW, specialFood = Color.RED;
     //移动速度
     private static int snakeMovingSpeed = 800;
     //食物位置
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private Timer timer;
     private Canvas canvas = null;
     //蛇和食物颜色
-    private Paint pointColor = null, pointAi = null, food = null;
+    private Paint pointColor = null, food = null;
     private GestureDetector gestureDetector;
     private boolean isPaused = false, gameOver = false, started = false;
     private ActivityResultLauncher<Intent> intentActivityResultLauncher;
@@ -81,8 +81,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private static int sound = -1;
     private boolean bonus = false;
     private final Random random = new Random();
-    private SnakeAi2 ai;
-    private static int mode = 0;
     private final Dpad dpad = new Dpad();
     private ImageView imageView;
     private MaterialTextView textView;
@@ -181,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private void initGestureDetector() {
         gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
             @Override
-            public boolean onDoubleTap(MotionEvent e) {
+            public boolean onDoubleTap(@NonNull MotionEvent e) {
                 if (!started) start();
                 else if (isPaused) resumeGame();
                 else pauseGame();
@@ -189,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             }
 
             @Override
-            public boolean onFling(@NonNull MotionEvent e1, @NonNull MotionEvent e2, float velocityX, float velocityY) {
+            public boolean onFling(MotionEvent e1, @NonNull MotionEvent e2, float velocityX, float velocityY) {
                 float deltaX = e2.getX() - e1.getX();
                 float deltaY = e2.getY() - e1.getY();
                 if (Math.abs(deltaX) > Math.abs(deltaY) && deltaX != 0) {
@@ -256,7 +254,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         barrierNum = sharedPreferences.getInt("difficulty", 0);
         int size = sharedPreferences.getInt("size", 1);
         int speed = sharedPreferences.getInt("speed", 1);
-        mode = sharedPreferences.getInt("mode", 0);
         sound = sharedPreferences.getInt("sound", 0);
         if (size == 0) pointSize = 72;
         else if (size == 2) pointSize = 45;
@@ -351,16 +348,10 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         if (sound == 0) MusicServer.play(this, R.raw.background);
 
         snakePointsList.clear();
-        aiPointsList.clear();
 
-        if (mode == 0) scoreTV.setText(getString(R.string.you) + "0");
-        else {
-            scoreTV.setText(getString(R.string.you) + "0" + " " + getString(R.string.ai) + "0");
-            ai = new SnakeAi2(surfaceView, barriers, pointSize);
-        }
+        scoreTV.setText(getString(R.string.you) + "0");
 
         score = 0;
-        scoreAi = 0;
 
         movingDirection = "right";
         int startPositionX = pointSize * defaultLength;
@@ -369,18 +360,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             SnakePoints snakePoints = new SnakePoints(startPositionX, pointSize);
             snakePointsList.add(snakePoints);
             startPositionX = startPositionX - (pointSize * 2);
-        }
-        if (mode == 1) {
-            aiMovingDirection = "right";
-            int aiStartPositionX = (pointSize) * defaultLength;
-            int aiStartPositionY = (surfaceView.getHeight() - (pointSize * 2)) / pointSize;
-            if (aiStartPositionY % 2 != 0) aiStartPositionY += 1;
-            aiStartPositionY = aiStartPositionY * pointSize + pointSize;
-            for (int i = 0; i < defaultLength; i++) {
-                SnakePoints snakePoints = new SnakePoints(aiStartPositionX, aiStartPositionY);
-                aiPointsList.add(snakePoints);
-                aiStartPositionX = aiStartPositionX - (pointSize * 2);
-            }
         }
     }
 
@@ -425,32 +404,18 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         if ((randomXPosition % 2) != 0) randomXPosition = randomXPosition + 1;
         if ((randomYPosition % 2) != 0) randomYPosition = randomYPosition + 1;
 
-        if (mode == 0) {
-            //确保食物不在蛇的身体上//确保食物不在墙上
-            while (snakePointsList.contains(new SnakePoints((pointSize * randomXPosition) + pointSize,
-                    (pointSize * randomYPosition) + pointSize)) ||
-                    barriers.contains(new SnakePoints((pointSize * randomXPosition) + pointSize,
-                            (pointSize * randomYPosition) + pointSize))) {
-                randomXPosition = random.nextInt(surfaceWidth / pointSize);
-                randomYPosition = random.nextInt(surfaceHeight / pointSize);
-                if ((randomXPosition % 2) != 0) randomXPosition = randomXPosition + 1;
-                if ((randomYPosition % 2) != 0) randomYPosition = randomYPosition + 1;
-            }
+
+        //确保食物不在蛇的身体上//确保食物不在墙上
+        while (snakePointsList.contains(new SnakePoints((pointSize * randomXPosition) + pointSize,
+                (pointSize * randomYPosition) + pointSize)) ||
+                barriers.contains(new SnakePoints((pointSize * randomXPosition) + pointSize,
+                        (pointSize * randomYPosition) + pointSize))) {
+            randomXPosition = random.nextInt(surfaceWidth / pointSize);
+            randomYPosition = random.nextInt(surfaceHeight / pointSize);
+            if ((randomXPosition % 2) != 0) randomXPosition = randomXPosition + 1;
+            if ((randomYPosition % 2) != 0) randomYPosition = randomYPosition + 1;
         }
 
-        if (mode == 1) {
-            while (snakePointsList.contains(new SnakePoints((pointSize * randomXPosition) + pointSize,
-                    (pointSize * randomYPosition) + pointSize))
-                    || barriers.contains(new SnakePoints((pointSize * randomXPosition) + pointSize,
-                    (pointSize * randomYPosition) + pointSize))
-                    || aiPointsList.contains(new SnakePoints((pointSize * randomXPosition) + pointSize,
-                    (pointSize * randomYPosition) + pointSize))) {
-                randomXPosition = random.nextInt(surfaceWidth / pointSize);
-                randomYPosition = random.nextInt(surfaceHeight / pointSize);
-                if ((randomXPosition % 2) != 0) randomXPosition = randomXPosition + 1;
-                if ((randomYPosition % 2) != 0) randomYPosition = randomYPosition + 1;
-            }
-        }
 
         positionX = (pointSize * randomXPosition) + pointSize;
         positionY = (pointSize * randomYPosition) + pointSize;
@@ -464,95 +429,48 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 //头部
                 int headPositionX = snakePointsList.get(0).getPositionX();
                 int headPositionY = snakePointsList.get(0).getPositionY();
-//                //检查是否吃到食物
-//                if (headPositionX == positionX && positionY == headPositionY) {
-//                    if (sound != 2) MusicServer.playOneTime(MainActivity.this, R.raw.eat);
-//                    if (!bonus) growSnake();
-//                    else shrinkSnake();
-//                    //增加食物
-//                    addPoints();
-//                }
-//                // 改变移动方向
-//                switch (movingDirection) {
-//                    case "right":
-//                        if ((headPositionX + (pointSize * 2)) >= surfaceView.getWidth()) {
-//                            snakePointsList.get(0).setPositionX(pointSize);
-//                        } else {
-//                            snakePointsList.get(0).setPositionX(headPositionX + (pointSize * 2));
-//                        }
-//                        snakePointsList.get(0).setPositionY(headPositionY);
-//                        break;
-//                    case "left":
-//                        if ((headPositionX - (pointSize * 2)) < 0) {
-//                            int max = (surfaceView.getWidth() - (pointSize * 2)) / pointSize;
-//                            if (max % 2 != 0) max -= 1;
-//                            max = pointSize * max + pointSize;
-//                            snakePointsList.get(0).setPositionX(max);
-//                        } else {
-//                            snakePointsList.get(0).setPositionX(headPositionX - (pointSize * 2));
-//                        }
-//                        snakePointsList.get(0).setPositionY(headPositionY);
-//                        break;
-//                    case "up":
-//                        snakePointsList.get(0).setPositionX(headPositionX);
-//                        snakePointsList.get(0).setPositionY(headPositionY - (pointSize * 2));
-//                        break;
-//                    case "down":
-//                        snakePointsList.get(0).setPositionX(headPositionX);
-//                        snakePointsList.get(0).setPositionY(headPositionY + (pointSize * 2));
-//                        break;
-//                }
-
-                int aiHeadPositionX = 0;
-                int aiHeadPositionY = 0;
-                if (mode == 1) {
-                    aiHeadPositionX = aiPointsList.get(0).getPositionX();
-                    aiHeadPositionY = aiPointsList.get(0).getPositionY();
-                    if (aiHeadPositionX == positionX && positionY == aiHeadPositionY) {
-                        if (sound != 2) MusicServer.playOneTime(MainActivity.this, R.raw.eat);
-                        if (!bonus) growAi();
-                        else shrinkAi();
-                        //增加食物
-                        addPoints();
-                    }
-                    aiMovingDirection = ai.moveAi(aiHeadPositionX, aiHeadPositionY, positionX, positionY, aiMovingDirection, aiPointsList);
-                    switch (aiMovingDirection) {
-                        case "right":
-                            if ((aiHeadPositionX + (pointSize * 2)) >= surfaceView.getWidth()) {
-                                aiPointsList.get(0).setPositionX(pointSize);
-                            } else {
-                                aiPointsList.get(0).setPositionX(aiHeadPositionX + (pointSize * 2));
-                            }
-                            aiPointsList.get(0).setPositionY(aiHeadPositionY);
-                            break;
-                        case "left":
-                            if ((aiHeadPositionX - (pointSize * 2)) < 0) {
-                                int max = (surfaceView.getWidth() - (pointSize * 2)) / pointSize;
-                                if (max % 2 != 0) max -= 1;
-                                max = pointSize * max + pointSize;
-                                aiPointsList.get(0).setPositionX(max);
-                            } else {
-                                aiPointsList.get(0).setPositionX(aiHeadPositionX - (pointSize * 2));
-                            }
-                            aiPointsList.get(0).setPositionY(aiHeadPositionY);
-                            break;
-                        case "up":
-                            aiPointsList.get(0).setPositionX(aiHeadPositionX);
-                            aiPointsList.get(0).setPositionY(aiHeadPositionY - (pointSize * 2));
-                            break;
-                        case "down":
-                            aiPointsList.get(0).setPositionX(aiHeadPositionX);
-                            aiPointsList.get(0).setPositionY(aiHeadPositionY + (pointSize * 2));
-                            break;
-                    }
-
+                //检查是否吃到食物
+                if (headPositionX == positionX && positionY == headPositionY) {
+                    if (sound != 2) MusicServer.playOneTime(MainActivity.this, R.raw.eat);
+                    if (!bonus) growSnake();
+                    else shrinkSnake();
+                    //增加食物
+                    addPoints();
+                }
+                // 改变移动方向
+                switch (movingDirection) {
+                    case "right":
+                        if ((headPositionX + (pointSize * 2)) >= surfaceView.getWidth()) {
+                            snakePointsList.get(0).setPositionX(pointSize);
+                        } else {
+                            snakePointsList.get(0).setPositionX(headPositionX + (pointSize * 2));
+                        }
+                        snakePointsList.get(0).setPositionY(headPositionY);
+                        break;
+                    case "left":
+                        if ((headPositionX - (pointSize * 2)) < 0) {
+                            int max = (surfaceView.getWidth() - (pointSize * 2)) / pointSize;
+                            if (max % 2 != 0) max -= 1;
+                            max = pointSize * max + pointSize;
+                            snakePointsList.get(0).setPositionX(max);
+                        } else {
+                            snakePointsList.get(0).setPositionX(headPositionX - (pointSize * 2));
+                        }
+                        snakePointsList.get(0).setPositionY(headPositionY);
+                        break;
+                    case "up":
+                        snakePointsList.get(0).setPositionX(headPositionX);
+                        snakePointsList.get(0).setPositionY(headPositionY - (pointSize * 2));
+                        break;
+                    case "down":
+                        snakePointsList.get(0).setPositionX(headPositionX);
+                        snakePointsList.get(0).setPositionY(headPositionY + (pointSize * 2));
+                        break;
                 }
 
-                boolean gameOver;
-                if (mode == 0)
-                    gameOver = checkGameOver(snakePointsList.get(0).getPositionX(), snakePointsList.get(0).getPositionY());
-                else
-                    gameOver = checkPveGameOver(snakePointsList.get(0).getPositionX(), snakePointsList.get(0).getPositionY(), aiPointsList.get(0).getPositionX(), aiPointsList.get(0).getPositionY());
+
+                boolean gameOver = checkGameOver(snakePointsList.get(0).getPositionX(), snakePointsList.get(0).getPositionY());
+
                 //判断结束条件
                 if (gameOver) {
                     timer.purge();
@@ -588,8 +506,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                         //清除画布
                         canvas.drawColor(getColor(R.color.green));
 
-                        if (mode == 1) canvas.drawCircle(aiPointsList.get(0).getPositionX(),
-                                aiPointsList.get(0).getPositionY(), pointSize, createAiColor());
                         //画蛇头位置
                         canvas.drawCircle(snakePointsList.get(0).getPositionX(),
                                 snakePointsList.get(0).getPositionY(), pointSize, createPointColor());
@@ -604,19 +520,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                             x = temp.getPositionX();
                             y = temp.getPositionY();
                             drawBarrier(canvas, x, y);
-                        }
-                        if (mode == 1) {
-                            for (int i = 1; i < aiPointsList.size(); i++) {
-                                int getTempPositionX = aiPointsList.get(i).getPositionX();
-                                int getTempPositionY = aiPointsList.get(i).getPositionY();
-                                //依次向前移动一格
-                                aiPointsList.get(i).setPositionX(aiHeadPositionX);
-                                aiPointsList.get(i).setPositionY(aiHeadPositionY);
-                                canvas.drawCircle(aiPointsList.get(i).getPositionX(), aiPointsList.get(i).getPositionY(), pointSize, createAiColor());
-
-                                aiHeadPositionX = getTempPositionX;
-                                aiHeadPositionY = getTempPositionY;
-                            }
                         }
 
                         //画蛇身
@@ -647,14 +550,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         updateText();
     }
 
-    private void growAi() {
-        SnakePoints snakePoints = new SnakePoints(0, 0);
-        // 加长一格
-        aiPointsList.add(snakePoints);
-        scoreAi++;
-        updateText();
-    }
-
     private void shrinkSnake() {
         // 缩短一格
         snakePointsList.remove(snakePointsList.size() - 1);
@@ -664,20 +559,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         updateText();
     }
 
-    private void shrinkAi() {
-        // 缩短一格
-        aiPointsList.remove(aiPointsList.size() - 1);
-        scoreAi += 3;
-        updateText();
-    }
-
     @SuppressLint("SetTextI18n")
     private void updateText() {
-        runOnUiThread(() -> {
-            if (mode == 0) scoreTV.setText(getString(R.string.you) + score);
-            else
-                scoreTV.setText(getString(R.string.you) + score + " " + getString(R.string.ai) + scoreAi);
-        });
+        runOnUiThread(() -> scoreTV.setText(getString(R.string.you) + score));
     }
 
     private boolean checkGameOver(int headPositionX, int headPositionY) {
@@ -708,41 +592,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         return gameOver = false;
     }
 
-    private boolean checkPveGameOver(int headPositionX, int headPositionY, int aiHeadPositionX, int aiHeadPositionY) {
-        // 检查是否撞到边缘
-        if (headPositionY < 0 || headPositionY >= surfaceView.getHeight()
-                || aiHeadPositionY < 0 || aiHeadPositionY >= surfaceView.getHeight()) {
-            return gameOver = true;
-        } else {
-//            // 检查是否撞到身体
-//            SnakePoints snakePoints = new SnakePoints(headPositionX, headPositionY);
-//            for (int i = 1; i < snakePointsList.size(); i++) {
-//                if (snakePointsList.get(i).equals(snakePoints)) {
-//                    return gameOver = true;
-//                }
-//            }
-            SnakePoints aiPoints = new SnakePoints(aiHeadPositionX, aiHeadPositionY);
-            for (int i = 1; i < aiPointsList.size(); i++) {
-                if (aiPointsList.get(i).equals(aiPoints)) {
-                    return gameOver = true;
-                }
-            }
-
-            // 检查是否撞到障碍物
-            Iterator<SnakePoints> iterator = barriers.iterator();
-            int x, y;
-            while (iterator.hasNext()) {
-                SnakePoints temp = iterator.next();
-                x = temp.getPositionX();
-                y = temp.getPositionY();
-                if ((x == headPositionX && y == headPositionY) || (x == aiHeadPositionX && y == aiHeadPositionY)) {
-                    return gameOver = true;
-                }
-            }
-        }
-        return gameOver = false;
-    }
-
     private Paint createPointColor() {
         if (pointColor == null) {
             pointColor = new Paint();
@@ -753,25 +602,14 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         return pointColor;
     }
 
-    private Paint createAiColor() {
-        if (pointAi == null) {
-            pointAi = new Paint();
-            pointAi.setColor(aiColor);
-            pointAi.setStyle(Paint.Style.FILL);
-            pointAi.setAntiAlias(true);
-        }
-        return pointAi;
-    }
-
     private Paint createFoodColor() {
         if (tempX != positionX || tempY != positionY) {
             food = new Paint();
             int red = random.nextInt(100);
             boolean show;
-            if (mode == 0) {
-                show = red < 90 || snakePointsList.size() <= defaultLength;
-            } else
-                show = red < 90 || snakePointsList.size() <= defaultLength || aiPointsList.size() <= defaultLength;
+
+            show = red < 90 || snakePointsList.size() <= defaultLength;
+
             if (show) {
                 food.setColor(snakeColor);
                 bonus = false;

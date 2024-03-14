@@ -20,12 +20,10 @@ public class SettingsActivity extends AppCompatActivity {
     private static final String SIZE_KEY = "size";
     private static final String SPEED_KEY = "speed";
     private static final String SOUND_KEY = "sound";
-    private static final String MODE_KEY = "mode";
     private int difficulty;
     private int size;
     private int speed;
     private int sound;
-    private int mode;
     private SharedPreferences sharedPreferences;
 
     @SuppressLint("ResourceType")
@@ -41,7 +39,6 @@ public class SettingsActivity extends AppCompatActivity {
         MaterialButtonToggleGroup sizeGroup = findViewById(R.id.size);
         MaterialButtonToggleGroup speedGroup = findViewById(R.id.speed);
         MaterialButtonToggleGroup soundGroup = findViewById(R.id.sound);
-        MaterialButtonToggleGroup modeGroup = findViewById(R.id.mode);
         Slider slider = findViewById(R.id.slider);
 
         difficulty = sharedPreferences.getInt(DIFFICULTY_KEY, 0);
@@ -49,7 +46,6 @@ public class SettingsActivity extends AppCompatActivity {
         size = sharedPreferences.getInt(SIZE_KEY, 1);
         speed = sharedPreferences.getInt(SPEED_KEY, 1);
         sound = sharedPreferences.getInt(SOUND_KEY, 0);
-        mode = sharedPreferences.getInt(MODE_KEY, 0);
 
         slider.setValue(difficulty);
         if (size == 0) sizeGroup.check(R.id.tiny);
@@ -61,8 +57,6 @@ public class SettingsActivity extends AppCompatActivity {
         if (sound == 0) soundGroup.check(R.id.all);
         else if (sound == 1) soundGroup.check(R.id.only);
         else soundGroup.check(R.id.none);
-        if (mode == 0) modeGroup.check(R.id.single);
-        else modeGroup.check(R.id.pve);
 
         slider.addOnChangeListener((slider1, value, fromUser) -> difficulty = (int) value);
         sizeGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
@@ -84,12 +78,6 @@ public class SettingsActivity extends AppCompatActivity {
                 if (checkedId == R.id.all) sound = 0;
                 else if (checkedId == R.id.only) sound = 1;
                 else sound = 2;
-            }
-        });
-        modeGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
-            if (isChecked) {
-                if (checkedId == R.id.single) mode = 0;
-                else mode = 1;
             }
         });
 
@@ -119,7 +107,6 @@ public class SettingsActivity extends AppCompatActivity {
         editor.putInt(SIZE_KEY, size);
         editor.putInt(SPEED_KEY, speed);
         editor.putInt(SOUND_KEY, sound);
-        editor.putInt(MODE_KEY, mode);
         editor.apply();
         Intent intent = new Intent();
         setResult(RESULT_OK, intent);
